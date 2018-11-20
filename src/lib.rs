@@ -10,7 +10,7 @@ use std::rc::Rc;
 pub enum Ast<'ast> {
     Lit(Value<'ast>),
     Variable(&'ast str),
-    Call(Box<Ast<'ast>>, Vec<Ast<'ast>>),
+    Call(Vec<Ast<'ast>>),
     Define(&'ast str, Box<Ast<'ast>>),
 }
 
@@ -51,7 +51,8 @@ pub fn eval<'ast>(program: &Ast<'ast>, variables: &mut HashMap<&'ast str, Value<
             Some(v) => v.clone(),
             _ => panic!("Variable does not exist: {}", &name),
         },
-        Call(func, arguments) => {
+        Call(call_args) => {
+			let (func, arguments) = call_args.split_first().unwrap();
             let func = eval(&*func, variables);
 
             match func {
@@ -128,8 +129,7 @@ parser! {
         let define = (white!(eq), ident(), expr()).map(|(_, a, b)| Ast::Define(a, Box::new(b)));
         let lit_num = recognize(skip_many1(digit()))
             .map(|i: &str| Ast::Lit(::Value::Int(i.parse().expect("Parsing integer failed"))));
-
-        let call = (expr(), many(expr())).map(|(func, args)| Ast::Call(Box::new(func), args));
+		let call = (many1(expr())).map(Ast::Call);
 
         white!(choice!(
             flse,
