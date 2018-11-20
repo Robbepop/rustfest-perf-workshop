@@ -4,6 +4,7 @@
 extern crate combine;
 
 use std::collections::HashMap;
+use std::rc::Rc;
 
 #[derive(Clone)]
 pub enum Ast<'ast> {
@@ -13,12 +14,17 @@ pub enum Ast<'ast> {
     Define(&'ast str, Box<Ast<'ast>>),
 }
 
+pub struct Func<'ast> {
+	args: Vec<&'ast str>,
+	body: Vec<Ast<'ast>>
+}
+
 #[derive(Clone)]
 pub enum Value<'ast> {
     Void,
     False,
     Int(u64),
-    Function(Vec<&'ast str>, Vec<Ast<'ast>>),
+    Function(Rc<Func<'ast>>),
     InbuiltFunc(fn(Vec<Value>) -> Value),
 }
 
@@ -49,10 +55,12 @@ pub fn eval<'ast>(program: &Ast<'ast>, variables: &mut HashMap<&'ast str, Value<
             let func = eval(&*func, variables);
 
             match func {
-                Function(args, body) => {
+                Function(func) => {
                     // Start a new scope, so all variables defined in the body of the
                     // function don't leak into the surrounding scope.
                     let mut new_scope = variables.clone();
+
+					let Func{ args, body } = &*func;
 
                     if arguments.len() != args.len() {
                         println!("Called function with incorrect number of arguments (expected {}, got {})", args.len(), arguments.len());
@@ -116,7 +124,7 @@ parser! {
             white!(lambda),
             white!(between(char('('), char(')'), many::<Vec<_>, _>(ident()))),
             many::<Vec<_>, _>(expr()),
-        ).map(|(_, a, b)| Ast::Lit(::Value::Function(a, b)));
+        ).map(|(_, a, b)| Ast::Lit(::Value::Function(Func{ args: a, body: b }.into())));
         let define = (white!(eq), ident(), expr()).map(|(_, a, b)| Ast::Define(a, Box::new(b)));
         let lit_num = recognize(skip_many1(digit()))
             .map(|i: &str| Ast::Lit(::Value::Int(i.parse().expect("Parsing integer failed"))));
