@@ -1,0 +1,10 @@
+ name                           after-1-advanced.bench ns/iter  after-2-beginner.bench ns/iter  diff ns/iter   diff %  speedup 
+ benches::parse_deep_nesting    49,312                          49,149                                  -163   -0.33%   x 1.00 
+ benches::parse_literals        27,835                          27,810                                   -25   -0.09%   x 1.00 
+ benches::parse_many_variables  160,287                         159,367                                 -920   -0.57%   x 1.01 
+ benches::parse_nested_func     33,565                          32,328                                -1,237   -3.69%   x 1.04 
+ benches::parse_real_code       3,985                           3,951                                    -34   -0.85%   x 1.01 
+ benches::run_deep_nesting      2,627                           726                                   -1,901  -72.36%   x 3.62 
+ benches::run_many_variables    23,808                          19,280                                -4,528  -19.02%   x 1.23 
+ benches::run_nested_func       4,256                           14,258                                10,002  235.01%   x 0.30 
+ benches::run_real_code         83,437                          86,855                                 3,418    4.10%   x 0.96

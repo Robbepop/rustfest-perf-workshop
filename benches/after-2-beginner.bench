@@ -1,0 +1,14 @@
+
+running 9 tests
+test benches::parse_deep_nesting   ... bench:      49,149 ns/iter (+/- 6,332)
+test benches::parse_literals       ... bench:      27,810 ns/iter (+/- 2,934)
+test benches::parse_many_variables ... bench:     159,367 ns/iter (+/- 25,746)
+test benches::parse_nested_func    ... bench:      32,328 ns/iter (+/- 3,403)
+test benches::parse_real_code      ... bench:       3,951 ns/iter (+/- 678)
+test benches::run_deep_nesting     ... bench:         726 ns/iter (+/- 23)
+test benches::run_many_variables   ... bench:      19,280 ns/iter (+/- 2,687)
+test benches::run_nested_func      ... bench:      14,258 ns/iter (+/- 636)
+test benches::run_real_code        ... bench:      86,855 ns/iter (+/- 13,101)
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 9 measured; 0 filtered out
+
