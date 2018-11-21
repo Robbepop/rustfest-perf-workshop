@@ -2,8 +2,9 @@
 
 #[macro_use]
 extern crate combine;
+extern crate fnv;
 
-use std::collections::HashMap;
+use fnv::FnvHashMap;
 use std::rc::Rc;
 
 #[derive(Clone)]
@@ -41,7 +42,7 @@ impl<'ast> PartialEq for Value<'ast> {
     }
 }
 
-pub fn eval<'ast>(program: &Ast<'ast>, variables: &mut HashMap<&'ast str, Value<'ast>>) -> Value<'ast> {
+pub fn eval<'ast>(program: &Ast<'ast>, variables: &mut FnvHashMap<&'ast str, Value<'ast>>) -> Value<'ast> {
     use self::Ast::*;
     use self::Value::*;
 
@@ -350,7 +351,7 @@ someval
     // our testing code needs in order to run.
     #[bench]
     fn run_deep_nesting(b: &mut Bencher) {
-        use std::collections::HashMap;
+        use fnv::FnvHashMap;
 
         // This just returns a function so `((whatever))` (equivalent
         // to `(whatever())()`) does something useful. Specifically
@@ -361,7 +362,7 @@ someval
             Value::InbuiltFunc(callable)
         }
 
-        let mut env = HashMap::new();
+        let mut env = FnvHashMap::default();
         env.insert("test", Value::InbuiltFunc(callable));
 
         let (program, _) = expr().easy_parse(DEEP_NESTING).unwrap();
@@ -371,9 +372,9 @@ someval
 
     #[bench]
     fn run_real_code(b: &mut Bencher) {
-        use std::collections::HashMap;
+        use fnv::FnvHashMap;
 
-        let mut env = HashMap::new();
+        let mut env = FnvHashMap::default();
 
         env.insert("eq", Value::InbuiltFunc(eq));
         env.insert("add", Value::InbuiltFunc(add));
@@ -393,7 +394,7 @@ someval
 
     #[bench]
     fn run_many_variables(b: &mut Bencher) {
-        use std::collections::HashMap;
+        use fnv::FnvHashMap;
 
         // This just takes anything and returns `Void`. We just
         // want a function that can take any number of arguments
@@ -406,7 +407,7 @@ someval
 
         let (program, _) = expr().easy_parse(MANY_VARIABLES).unwrap();
 
-        let mut env = HashMap::new();
+        let mut env = FnvHashMap::default();
 
         env.insert("ignore", Value::InbuiltFunc(ignore));
 
@@ -415,10 +416,10 @@ someval
 
     #[bench]
     fn run_nested_func(b: &mut Bencher) {
-        use std::collections::HashMap;
+        use fnv::FnvHashMap;
 
         let (program, _) = expr().easy_parse(NESTED_FUNC).unwrap();
-        let mut env = HashMap::new();
+        let mut env = FnvHashMap::default();
         b.iter(|| black_box(eval(&program, &mut env)));
     }
 }
