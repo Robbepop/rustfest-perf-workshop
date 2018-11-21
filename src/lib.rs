@@ -2,8 +2,9 @@
 
 #[macro_use]
 extern crate combine;
+extern crate hashbrown;
 
-use std::collections::HashMap;
+use hashbrown::HashMap;
 use std::rc::Rc;
 
 #[derive(Clone)]
@@ -350,7 +351,7 @@ someval
     // our testing code needs in order to run.
     #[bench]
     fn run_deep_nesting(b: &mut Bencher) {
-        use std::collections::HashMap;
+        use hashbrown::HashMap;
 
         // This just returns a function so `((whatever))` (equivalent
         // to `(whatever())()`) does something useful. Specifically
@@ -371,7 +372,7 @@ someval
 
     #[bench]
     fn run_real_code(b: &mut Bencher) {
-        use std::collections::HashMap;
+        use hashbrown::HashMap;
 
         let mut env = HashMap::new();
 
@@ -393,7 +394,7 @@ someval
 
     #[bench]
     fn run_many_variables(b: &mut Bencher) {
-        use std::collections::HashMap;
+        use hashbrown::HashMap;
 
         // This just takes anything and returns `Void`. We just
         // want a function that can take any number of arguments
@@ -415,7 +416,7 @@ someval
 
     #[bench]
     fn run_nested_func(b: &mut Bencher) {
-        use std::collections::HashMap;
+        use hashbrown::HashMap;
 
         let (program, _) = expr().easy_parse(NESTED_FUNC).unwrap();
         let mut env = HashMap::new();
